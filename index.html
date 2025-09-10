@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CiviSolve – Civic Issue Reporting Dashboard</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; margin: 0; }
+    header { background: #1976d2; color: white; padding: 1.5em; text-align: center; font-size: 2em; letter-spacing: 0.04em; box-shadow: 0 2px 8px rgba(0,0,0,0.07);}
+    nav { text-align: center; margin-bottom: 2em; }
+    nav a { color: white; background: #1565c0; text-decoration: none; margin: 0 12px; padding: 0.7em 2em; border-radius: 30px; font-weight: bold; font-size: 1em; transition: background 0.3s; display: inline-block; box-shadow: 0 1px 5px rgba(0,0,0,0.06);}
+    nav a.active, nav a:focus, nav a:hover { background: #1976d2; outline: none;}
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2em; padding: 3em; max-width: 1200px; margin: auto; }
+    .card { background: white; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 1.7em; text-align: left; font-weight: bold; color: #1976d2; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; cursor:pointer; }
+    .card:hover, .card:focus { transform: scale(1.04); box-shadow: 0 8px 24px rgba(0,0,0,0.12); outline:2px solid #1976d2;}
+    .card h3 { margin: 0 0 0.5em 0; font-size: 1.17em; font-weight: 600;}
+    .card p { font-weight: normal; font-size: 1em; color: #444; margin: 0; }
+    .modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.25);}
+    .modal-content { background:#fff; max-width:600px; margin:6vh auto; padding:2em; border-radius:18px; box-shadow:0 10px 40px rgba(0,0,0,0.15); position: relative;}
+    .modal-content h2 { color: #1976d2; margin-top: 0; margin-bottom: 0.7em; font-size: 1.4em; text-align: center; }
+    .modal-content ol, .modal-content ul { margin-bottom:1em;}
+    .modal-content .close { position:absolute;right:1em;top:1em;background:none;color:#1976d2;border:none;font-size:1.7em;cursor:pointer;}
+    .modal-content button, .modal-content a.back-btn { background: #1976d2; color: white; border: none; border-radius: 8px; padding: 0.7em 1.4em; font-weight: bold; margin-right: 8px; cursor: pointer; font-size: 1em; margin-top: 1em; text-decoration:none;}
+    .modal-content button:focus, .modal-content a.back-btn:focus { outline:2px solid #1565c0;}
+    .modal-content button:hover, .modal-content a.back-btn:hover { background:#1565c0; }
+    .modal-content .back-btn { display:inline-block; margin-top:1em;}
+    .modal-content .emoji { font-size:2em; margin-right:.25em;}
+    .modal-content .contacts-list li {margin-bottom:.7em;}
+    .modal-content .contacts-list a {color:#1976d2; text-decoration:underline;}
+    @media (max-width: 700px) {.grid { padding: 1.5em; } .card { padding: 1.2em; } .modal-content { max-width: 98vw; padding: 1em; }}
+    .help-box { background:#e3f2fd; border-radius:10px; padding:1em; margin-bottom:1em;}
+    footer { text-align: center; padding: 2em; margin-top: 2em; font-size:1.05em; color:#1976d2;}
+    /* Accessibility */
+    .card:focus {outline:2px solid #1976d2;}
+  </style>
+</head>
+<body>
+  <header>
+    🏙️ CiviSolve – Civic Issue Reporting Dashboard
+    <nav>
+      <a href="#" onclick="showModal('guide');return false;" id="nav-guide">Guide</a>
+      <a href="#" onclick="showModal('contacts');return false;" id="nav-contacts">Contacts</a>
+    </nav>
+  </header>
+  <main class="grid">
+    <div class="card" tabindex="0" onclick="showModal('pothole')" onkeydown="if(event.key==='Enter'){showModal('pothole')}">
+      <h3>🚧 Pothole Reporting</h3>
+      <p>Report dangerous road potholes to improve road safety.</p>
+    </div>
+    <div class="card" tabindex="0" onclick="showModal('streetlight')" onkeydown="if(event.key==='Enter'){showModal('streetlight')}">
+      <h3>💡 Streetlight Issue</h3>
+      <p>Report broken or flickering streetlights for public safety.</p>
+    </div>
+    <div class="card" tabindex="0" onclick="showModal('garbage')" onkeydown="if(event.key==='Enter'){showModal('garbage')}">
+      <h3>🗑️ Garbage Overflow</h3>
+      <p>Report uncollected or overflowing garbage for a cleaner city.</p>
+    </div>
+    <div class="card" tabindex="0" onclick="showModal('waterleak')" onkeydown="if(event.key==='Enter'){showModal('waterleak')}">
+      <h3>🚰 Water Leak</h3>
+      <p>Report water pipe leaks causing wastage and damage.</p>
+    </div>
+    <div class="card" tabindex="0" onclick="showModal('illegalconstruction')" onkeydown="if(event.key==='Enter'){showModal('illegalconstruction')}">
+      <h3>🏗️ Illegal Construction</h3>
+      <p>Report unauthorized construction activities violating regulations.</p>
+    </div>
+    <div class="card" tabindex="0" onclick="showModal('parkissues')" onkeydown="if(event.key==='Enter'){showModal('parkissues')}">
+      <h3>🌳 Public Park Issues</h3>
+      <p>Report problems like broken benches, damaged equipment, etc.</p>
+    </div>
+  </main>
+  <footer>
+    &copy; 2025 CiviSolve – Making Cities Smarter. <br>
+    All reports will be sent to relevant municipal departments for action.
+  </footer>
+
+  <!-- MODALS -->
+  <div id="modal-guide" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content" tabindex="-1">
+      <button class="close" onclick="closeModal('guide')" aria-label="Close guide dialog">&times;</button>
+      <h2><span class="emoji">🛠️</span> How to Report a Civic Issue</h2>
+      <div class="help-box">
+        <ol>
+          <li><strong>Identify the Issue:</strong> Take a clear photo of the problem.</li>
+          <li><strong>Describe the Issue:</strong> Provide a brief, precise description.</li>
+          <li><strong>Specify Location:</strong> Use GPS coordinates or pinpoint on map.</li>
+          <li><strong>Upload Evidence:</strong> Attach the photo with description.</li>
+          <li><strong>Submit Report:</strong> Click "Submit" to send to authorities.</li>
+          <li><strong>Track Status:</strong> You can track the status post submission.</li>
+        </ol>
+        <p>Your participation keeps the city safe, clean, and maintained.</p>
+      </div>
+      <a class="back-btn" href="#" onclick="closeModal('guide');return false;">⬅ Back to Dashboard</a>
+    </div>
+  </div>
+  <div id="modal-contacts" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content" tabindex="-1">
+      <button class="close" onclick="closeModal('contacts')" aria-label="Close contacts dialog">&times;</button>
+      <h2><span class="emoji">📞</span> Municipal Contacts</h2>
+      <ul class="contacts-list">
+        <li>🚧 <b>Road Maintenance Dept:</b> <a href="tel:1800123456">1800-123-456</a></li>
+        <li>💡 <b>Streetlight Maintenance:</b> <a href="tel:1800234567">1800-234-567</a></li>
+        <li>🗑️ <b>Sanitation Dept:</b> <a href="tel:1800345678">1800-345-678</a></li>
+        <li>🏛️ <b>Municipal Corporation Helpline:</b> <a href="tel:1800456789">1800-456-789</a></li>
+      </ul>
+      <a class="back-btn" href="#" onclick="closeModal('contacts');return false;">⬅ Back to Dashboard</a>
+    </div>
+  </div>
+  <div id="modal-pothole" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content" tabindex="-1">
+      <button class="close" onclick="closeModal('pothole')" aria-label="Close pothole dialog">&times;</button>
+      <h2><span class="emoji">🚧</span> How to Report Potholes</h2>
+      <ul>
+        <li>Take a clear photo of the pothole.</li>
+        <li>Provide the exact location (GPS coordinates or address).</li>
+        <li>Describe the issue and its severity.</li>
+        <li>Submit your report via CiviSolve or call the Road Maintenance Dept.</li>
+      </ul>
+      <button onclick="speakModal('potholeText')">🔊 Play Instructions</button>
+      <a class="back-btn" href="#" onclick="closeModal('pothole');return false;">⬅ Back to Dashboard</a>
+    </div>
+  </div>
+  <div id="modal-streetlight" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content" tabindex="-1">
+      <button class="close" onclick="closeModal('streetlight')" aria-label="Close streetlight dialog">&times;</button>
+      <h2><span class="emoji">💡</span> Streetlight Malfunction Reporting</h2>
+      <ul>
+        <li>Take a clear photo showing the defective streetlight.</li>
+        <li>Provide the exact location (GPS coordinates or street address).</li>
+        <li>Briefly describe the problem (e.g., completely off, flickering, damaged pole).</li>
+        <li>Submit the report via CiviSolve or call the relevant department directly.</li>
+      </ul>
+      <button onclick="speakModal('streetlightText')">🔊 Play Instructions</button>
+      <a class="back-btn" href="#" onclick="closeModal('streetlight');return false;">⬅ Back to Dashboard</a>
+    </div>
+  </div>
+  <div id="modal-garbage" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content" tabindex="-1">
+      <button class="close" onclick="closeModal('garbage')" aria-label="Close garbage dialog">&times;</button>
+      <h2><span class="emoji">🗑️</span> How to Report Garbage Overflow</h2>
+      <ul>
+        <li>Take a clear photo showing the uncollected or overflowing garbage.</li>
+        <li>Provide the exact location using GPS coordinates or a map pin.</li>
+        <li>Briefly describe the issue, including type of waste (household, construction, etc.).</li>
+        <li>Avoid uploading inappropriate images to ensure report validity.</li>
+      </ul>
+      <button onclick="speakModal('garbageText')">🔊 Play Instructions</button>
+      <a class="back-btn" href="#" onclick="closeModal('garbage');return false;">⬅ Back to Dashboard</a>
+    </div>
+  </div>
+  <div id="modal-waterleak" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content" tabindex="-1">
+      <button class="close" onclick="closeModal('waterleak')" aria-label="Close waterleak dialog">&times;</button>
+      <h2><span class="emoji">🚰</span> How to Report a Water Pipe Leak</h2>
+      <ol>
+        <li>Stay safe: Do not touch exposed electrical wiring near the leak.</li>
+        <li>Take a clear photo of the leaking pipe and affected area.</li>
+        <li>Provide the exact location using GPS or address.</li>
+        <li>Describe the severity: dripping, major rupture, flooding, etc.</li>
+        <li>Avoid attempting repairs yourself to prevent injury or further damage.</li>
+        <li>Submit the report through CiviSolve or contact the Water Department directly.</li>
+      </ol>
+      <p>Timely reporting helps prevent water wastage, property damage, and public hazards.</p>
+      <button onclick="speakModal('waterleakText')">🔊 Play Instructions</button>
+      <a class="back-btn" href="#" onclick="closeModal('waterleak');return false;">⬅ Back to Dashboard</a>
+    </div>
+  </div>
+  <div id="modal-illegalconstruction" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content" tabindex="-1">
+      <button class="close" onclick="closeModal('illegalconstruction')" aria-label="Close illegal construction dialog">&times;</button>
+      <h2><span class="emoji">🏗️</span> Reporting Illegal Construction</h2>
+      <ul>
+        <li>Take clear photographs showing the construction site and any illegal activity.</li>
+        <li>Provide the exact location using GPS coordinates or address.</li>
+        <li>Write a brief description explaining the suspected violation (e.g., no permit displayed, violation of zoning regulations).</li>
+        <li>Avoid approaching the site or confronting workers for safety reasons.</li>
+        <li>Submit your report through CiviSolve or call the Municipal Corporation Helpline directly.</li>
+      </ul>
+      <button onclick="speakModal('illegalconstructionText')">🔊 Play Instructions</button>
+      <a class="back-btn" href="#" onclick="closeModal('illegalconstruction');return false;">⬅ Back to Dashboard</a>
+    </div>
+  </div>
+  <div id="modal-parkissues" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content" tabindex="-1">
+      <button class="close" onclick="closeModal('parkissues')" aria-label="Close park issue dialog">&times;</button>
+      <h2><span class="emoji">🌳</span> How to Report Public Park Issues</h2>
+      <ol>
+        <li>Take clear photos showing the issue (e.g., broken benches, damaged playground equipment, unsafe lighting).</li>
+        <li>Provide the exact location using GPS coordinates or a detailed address.</li>
+        <li>Write a brief description of the issue, including when you noticed it.</li>
+        <li>Avoid tampering with park structures to prevent accidents or further damage.</li>
+        <li>Submit the report via CiviSolve or call the Municipal Corporation Helpline.</li>
+      </ol>
+      <p>Your report helps improve public amenities and ensures safer community spaces.</p>
+      <button onclick="speakModal('parkissuesText')">🔊 Play Instructions</button>
+      <a class="back-btn" href="#" onclick="closeModal('parkissues');return false;">⬅ Back to Dashboard</a>
+    </div>
+  </div>
+  <script>
+    // Modal speech text
+    const potholeText = "Take a clear photo of the pothole. Provide the exact location using GPS coordinates or address. Describe the issue and its severity. Submit your report via CiviSolve or contact the Road Maintenance Department.";
+    const streetlightText = "Take a clear photo showing the defective streetlight. Provide the exact location using GPS coordinates or street address. Briefly describe the problem, such as whether the streetlight is completely off or flickering. Submit the report via the CiviSolve system or by contacting the maintenance department.";
+    const garbageText = "Take a clear photo showing the uncollected or overflowing garbage. Provide the exact location using GPS coordinates or a map pin. Briefly describe the issue, including type of waste. Avoid uploading inappropriate images to ensure report validity.";
+    const waterleakText = "Stay safe. Do not touch exposed electrical wiring near the leak. Take a clear photo of the leaking pipe and affected area. Provide the exact location using GPS coordinates or a precise address. Describe the severity of the leak: dripping, major rupture, flooding, etc. Avoid attempting repairs yourself to prevent injury or further damage. Submit the report through the CiviSolve system or contact the Municipal Water Department directly. Timely reporting helps prevent water wastage, property damage, and public hazards.";
+    const illegalconstructionText = "Take clear photographs showing the construction site and any illegal activity. Provide the exact location using GPS coordinates or address. Write a brief description explaining the suspected violation. Avoid approaching the site for safety reasons. Submit the report via CiviSolve system or Municipal Helpline.";
+    const parkissuesText = "Take clear photos showing the issue, such as broken benches, damaged playground equipment, unsafe lighting. Provide the exact location of the problem using GPS coordinates or a detailed address. Write a brief description of the issue, including when you noticed it. Avoid tampering with park structures to prevent accidents or further damage. Submit the report via the CiviSolve system or call the Municipal Corporation Helpline. Your report helps improve public amenities and ensures safer community spaces.";
+
+    // Modal logic
+    function showModal(type) {
+      document.getElementById('modal-' + type).style.display = 'block';
+      document.getElementById('modal-' + type).querySelector('.modal-content').focus();
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(type) {
+      stopSpeech();
+      document.getElementById('modal-' + type).style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    function speakModal(textKey) {
+      stopSpeech();
+      const utterance = new SpeechSynthesisUtterance(window[textKey]);
+      window.speechSynthesis.speak(utterance);
+    }
+    function stopSpeech() {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+      }
+    }
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+          stopSpeech();
+          document.body.style.overflow = '';
+        }
+      });
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === "Escape") {
+        document.querySelectorAll('.modal').forEach(modal => {
+          modal.style.display = 'none';
+        });
+        stopSpeech();
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+</body>
+</html>
